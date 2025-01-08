@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>NoiseRobustAudioCodec-demo</title>
+    
+    <meta name="description" content="Demo Page for ERVQ">
+    
+    <meta name="author" content="">
+
+    <link rel="stylesheet" href="css/fontawesome.all.min.css">
+    <link rel="stylesheet" type="text/css"  href="css/bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="fonts/font-awesome/css/font-awesome.css">
+    
+    <link rel="stylesheet" href="css/fontawesome.all.min.css">
+    <link rel="stylesheet" type="text/css"  href="css/style.css">
+    
+    <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro" rel="stylesheet">  
+    <!-- <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,700,800,600,300' rel='stylesheet' type='text/css'> -->
+    <script type="text/javascript" src="js/modernizr.custom.js"></script>
+
+</head>
+
+
+<body>
+  
+  <div class="container">
+
+    <div class="section-title text-center center">
+        <h1 style="color:black"><strong><br><br> Enhancing Noise Robustness in Audio Codecs via Progressive Probabilistic Top-K Sampling in Residual Vector Quantization Using Only Clean Speech</b></strong></h1>
+        <br><br> 
+        <!-- <font color="black" size="4"> Author: </font>
+        <a href="https://zhengrachel.github.io/"><font color="black" size="4"><u>Rui-Chen Zheng</u></a>,
+        <a><font color="black" size="4"><u>Xiao-Hang Jiang</u></a>, 
+        <a href="http://staff.ustc.edu.cn/~yangai/"><font color="black" size="4"><u>Yang Ai</u></a>, 
+        <font color="black" size="4">and </font>
+        <a href="http://staff.ustc.edu.cn/~zhling/#!index.md"><font color="black" size="4"><u>Zhen-Hua Ling</u></a> -->
+        <font color="black" size="4"> Anonymous Author(s). </font>
+    </div>
+
+    <!-- <div class="portfolio-item"> 
+        <img style="border:0px solid black;" src="img/ERVQ.png" class="img-responsive" alt="ERVQ"><br><br>
+    </div>  -->
+
+    <div class="row">
+      
+          <div class="col-md-10 col-md-offset-1">
+
+                <p style="color:black; font-family:Sans-Serif; font-size:16px">                         
+                    Noise robustness remains a critical challenge in the development of neural audio codecs, particularly for real-world speech communication scenarios. 
+                    This paper presents a novel training strategy, progressive probabilistic top-K sampling, designed to enhance the noise robustness of audio codecs while training exclusively on clean speech data. 
+                    Unlike traditional residual vector quantization (RVQ) methods that select the closest codebook vector, our approach probabilistically samples from the top-K closest candidates, simulating noise at the code level and enabling the model to handle unseen noisy conditions. 
+                    Additionally, we propose a progressive training strategy that gradually introduces the noise robustness from the final quantizer to the first quantizer in the RVQ structure. 
+                    Experimental results on one of the most advanced audio codecs demonstrate significant improvements in noise robustness, with PESQ increasing from 2.399 to 2.466 for decoded noisy speech, while maintaining high-quality performance for clean speech. 
+                </p> <br><hr><br>
+      
+          </div>
+    </div>
+
+  </div>
+
+    <div class="inner">
+        <!-- <div class="section-title center"> -->
+    <div class="section-title text-center center">
+      <!-- <div class="col-md-20 col-md-offset--100"> -->
+
+        <br><br><br>
+        <p style="color:black; font-family:Sans-Serif; font-size:32px;"> Experimental Results: Coding Noisy Speech</p>
+        <!-- <p style="color:gray; font-family:Sans-Serif; font-size:20px;"> For more samples, please refer to <a href="https://anonymous.4open.science/r/ERVQ-A907/SpeechCoding"><strong>this folder</strong></a>. </p> -->
+
+        <br><br><br>
+        <p style="color:black; font-family:Sans-Serif; font-size:24px;"> EnCodec @ 6kbps for 24kHz Audio</p>
+        
+        <br><br>
+
+        <div style="width:1600px; margin:0 auto;">
+
+            <table align="center"border=0 justify="center" cellpadding="20px" style="width: 60%">
+                <tr>
+                
+                <th style=" background-color:white;position: sticky; top: 0; width: 20%; text-align: center; padding: 10px; color:black">Input Noisy</th>
+                <th style=" background-color:white; position: sticky; top: 0;width: 20%; text-align: center; padding: 10px; color:black">Closest</th>
+                <th style=" background-color:white; position: sticky; top: 0;width: 20%; text-align: center; padding: 10px; color:black">Closest*</th>
+                <th style=" background-color:white; position: sticky; top: 0;width: 20%; text-align: center; padding: 10px; color:black">Proposed</th>
+                <th style=" background-color:white; position: sticky; top: 0;width: 20%; text-align: center; padding: 10px; color:black">Proposed† </th>
+                </tr>
+
+
+                <tr>
+                    <td style="width: 20%; text-align: center; padding: 10px; color:black">
+                    <img src="wav/noisy/input_noisy/p360_019-OOFFICE.png" alt="Spectrogram" width="300"><br>
+                    <audio width="300" controls><source src="wav/noisy/input_noisy/p360_019-OOFFICE.wav"></audio>
+                    </td>
+            
+                    <td style="width: 20%; text-align: center; padding: 10px; color:black">
+                    <img src="wav/noisy/closest/p360_019-OOFFICE.png" alt="Spectrogram" width="300"><br>
+                    <audio width="300" controls><source src="wav/noisy/closest/p360_019-OOFFICE.wav"></audio>
+                    </td>
+            
+                    <td style="width: 20%; text-align: center; padding: 10px; color:black">
+                        <img src="wav/noisy/closest_star/p360_019-OOFFICE.png" alt="Spectrogram" width="300"><br>
+                    <audio width="300" controls><source src="wav/noisy/closest_star/p360_019-OOFFICE.wav"></audio>
+                    </td>
+
+                    <td style="width: 20%; text-align: center; padding: 10px; color:black">
+                    <img src="wav/noisy/proposed/p360_019-OOFFICE.png" alt="Spectrogram" width="300"><br>
+                    <audio width="300" controls><source src="wav/noisy/proposed/p360_019-OOFFICE.wav"></audio>
+                    </td>
+
+                    <td style="width: 20%; text-align: center; padding: 10px; color:black">
+                    <img src="wav/noisy/proposed_dag/p360_019-OOFFICE.png" alt="Spectrogram" width="300"><br>
+                    <audio width="300" controls><source src="wav/noisy/proposed_dag/p360_019-OOFFICE.wav"></audio>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td style="width: 20%; text-align: center; padding: 10px; color:black">
+                    <img src="wav/noisy/input_noisy/p361_020-DKITCHEN.png" alt="Spectrogram" width="300"><br>
+                    <audio width="300" controls><source src="wav/noisy/input_noisy/p361_020-DKITCHEN.wav"></audio>
+                    </td>
+            
+                    <td style="width: 20%; text-align: center; padding: 10px; color:black">
+                    <img src="wav/noisy/closest/p361_020-DKITCHEN.png" alt="Spectrogram" width="300"><br>
+                    <audio width="300" controls><source src="wav/noisy/closest/p361_020-DKITCHEN.wav"></audio>
+                    </td>
+            
+                    <td style="width: 20%; text-align: center; padding: 10px; color:black">
+                        <img src="wav/noisy/closest_star/p361_020-DKITCHEN.png" alt="Spectrogram" width="300"><br>
+                    <audio width="300" controls><source src="wav/noisy/closest_star/p361_020-DKITCHEN.wav"></audio>
+                    </td>
+
+                    <td style="width: 20%; text-align: center; padding: 10px; color:black">
+                    <img src="wav/noisy/proposed/p361_020-DKITCHEN.png" alt="Spectrogram" width="300"><br>
+                    <audio width="300" controls><source src="wav/noisy/proposed/p361_020-DKITCHEN.wav"></audio>
+                    </td>
+
+                    <td style="width: 20%; text-align: center; padding: 10px; color:black">
+                    <img src="wav/noisy/proposed_dag/p361_020-DKITCHEN.png" alt="Spectrogram" width="300"><br>
+                    <audio width="300" controls><source src="wav/noisy/proposed_dag/p361_020-DKITCHEN.wav"></audio>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td style="width: 20%; text-align: center; padding: 10px; color:black">
+                    <img src="wav/noisy/input_noisy/p362_107-OHALLWAY.png" alt="Spectrogram" width="300"><br>
+                    <audio width="300" controls><source src="wav/noisy/input_noisy/p362_107-OHALLWAY.wav"></audio>
+                    </td>
+            
+                    <td style="width: 20%; text-align: center; padding: 10px; color:black">
+                    <img src="wav/noisy/closest/p362_107-OHALLWAY.png" alt="Spectrogram" width="300"><br>
+                    <audio width="300" controls><source src="wav/noisy/closest/p362_107-OHALLWAY.wav"></audio>
+                    </td>
+            
+                    <td style="width: 20%; text-align: center; padding: 10px; color:black">
+                        <img src="wav/noisy/closest_star/p362_107-OHALLWAY.png" alt="Spectrogram" width="300"><br>
+                    <audio width="300" controls><source src="wav/noisy/closest_star/p362_107-OHALLWAY.wav"></audio>
+                    </td>
+
+                    <td style="width: 20%; text-align: center; padding: 10px; color:black">
+                    <img src="wav/noisy/proposed/p362_107-OHALLWAY.png" alt="Spectrogram" width="300"><br>
+                    <audio width="300" controls><source src="wav/noisy/proposed/p362_107-OHALLWAY.wav"></audio>
+                    </td>
+
+                    <td style="width: 20%; text-align: center; padding: 10px; color:black">
+                    <img src="wav/noisy/proposed_dag/p362_107-OHALLWAY.png" alt="Spectrogram" width="300"><br>
+                    <audio width="300" controls><source src="wav/noisy/proposed_dag/p362_107-OHALLWAY.wav"></audio>
+                    </td>
+                </tr>
+
+
+                <tr>
+                    <td style="width: 20%; text-align: center; padding: 10px; color:black">
+                    <img src="wav/noisy/input_noisy/p363_108-DLIVING.png" alt="Spectrogram" width="300"><br>
+                    <audio width="300" controls><source src="wav/noisy/input_noisy/p363_108-DLIVING.wav"></audio>
+                    </td>
+            
+                    <td style="width: 20%; text-align: center; padding: 10px; color:black">
+                    <img src="wav/noisy/closest/p363_108-DLIVING.png" alt="Spectrogram" width="300"><br>
+                    <audio width="300" controls><source src="wav/noisy/closest/p363_108-DLIVING.wav"></audio>
+                    </td>
+            
+                    <td style="width: 20%; text-align: center; padding: 10px; color:black">
+                        <img src="wav/noisy/closest_star/p363_108-DLIVING.png" alt="Spectrogram" width="300"><br>
+                    <audio width="300" controls><source src="wav/noisy/closest_star/p363_108-DLIVING.wav"></audio>
+                    </td>
+
+                    <td style="width: 20%; text-align: center; padding: 10px; color:black">
+                    <img src="wav/noisy/proposed/p363_108-DLIVING.png" alt="Spectrogram" width="300"><br>
+                    <audio width="300" controls><source src="wav/noisy/proposed/p363_108-DLIVING.wav"></audio>
+                    </td>
+
+                    <td style="width: 20%; text-align: center; padding: 10px; color:black">
+                    <img src="wav/noisy/proposed_dag/p363_108-DLIVING.png" alt="Spectrogram" width="300"><br>
+                    <audio width="300" controls><source src="wav/noisy/proposed_dag/p363_108-DLIVING.wav"></audio>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td style="width: 20%; text-align: center; padding: 10px; color:black">
+                    <img src="wav/noisy/input_noisy/p364_009-SPSQUARE.png" alt="Spectrogram" width="300"><br>
+                    <audio width="300" controls><source src="wav/noisy/input_noisy/p364_009-SPSQUARE.wav"></audio>
+                    </td>
+            
+                    <td style="width: 20%; text-align: center; padding: 10px; color:black">
+                    <img src="wav/noisy/closest/p364_009-SPSQUARE.png" alt="Spectrogram" width="300"><br>
+                    <audio width="300" controls><source src="wav/noisy/closest/p364_009-SPSQUARE.wav"></audio>
+                    </td>
+            
+                    <td style="width: 20%; text-align: center; padding: 10px; color:black">
+                        <img src="wav/noisy/closest_star/p364_009-SPSQUARE.png" alt="Spectrogram" width="300"><br>
+                    <audio width="300" controls><source src="wav/noisy/closest_star/p364_009-SPSQUARE.wav"></audio>
+                    </td>
+
+                    <td style="width: 20%; text-align: center; padding: 10px; color:black">
+                    <img src="wav/noisy/proposed/p364_009-SPSQUARE.png" alt="Spectrogram" width="300"><br>
+                    <audio width="300" controls><source src="wav/noisy/proposed/p364_009-SPSQUARE.wav"></audio>
+                    </td>
+
+                    <td style="width: 20%; text-align: center; padding: 10px; color:black">
+                    <img src="wav/noisy/proposed_dag/p364_009-SPSQUARE.png" alt="Spectrogram" width="300"><br>
+                    <audio width="300" controls><source src="wav/noisy/proposed_dag/p364_009-SPSQUARE.wav"></audio>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td style="width: 20%; text-align: center; padding: 10px; color:black">
+                    <img src="wav/noisy/input_noisy/p374_296-PCAFETER.png" alt="Spectrogram" width="300"><br>
+                    <audio width="300" controls><source src="wav/noisy/input_noisy/p374_296-PCAFETER.wav"></audio>
+                    </td>
+            
+                    <td style="width: 20%; text-align: center; padding: 10px; color:black">
+                    <img src="wav/noisy/closest/p374_296-PCAFETER.png" alt="Spectrogram" width="300"><br>
+                    <audio width="300" controls><source src="wav/noisy/closest/p374_296-PCAFETER.wav"></audio>
+                    </td>
+            
+                    <td style="width: 20%; text-align: center; padding: 10px; color:black">
+                        <img src="wav/noisy/closest_star/p374_296-PCAFETER.png" alt="Spectrogram" width="300"><br>
+                    <audio width="300" controls><source src="wav/noisy/closest_star/p374_296-PCAFETER.wav"></audio>
+                    </td>
+
+                    <td style="width: 20%; text-align: center; padding: 10px; color:black">
+                    <img src="wav/noisy/proposed/p374_296-PCAFETER.png" alt="Spectrogram" width="300"><br>
+                    <audio width="300" controls><source src="wav/noisy/proposed/p374_296-PCAFETER.wav"></audio>
+                    </td>
+
+                    <td style="width: 20%; text-align: center; padding: 10px; color:black">
+                    <img src="wav/noisy/proposed_dag/p374_296-PCAFETER.png" alt="Spectrogram" width="300"><br>
+                    <audio width="300" controls><source src="wav/noisy/proposed_dag/p374_296-PCAFETER.wav"></audio>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td style="width: 20%; text-align: center; padding: 10px; color:black">
+                    <img src="wav/noisy/input_noisy/p376_351-TMETRO.png" alt="Spectrogram" width="300"><br>
+                    <audio width="300" controls><source src="wav/noisy/input_noisy/p376_351-TMETRO.wav"></audio>
+                    </td>
+            
+                    <td style="width: 20%; text-align: center; padding: 10px; color:black">
+                    <img src="wav/noisy/closest/p376_351-TMETRO.png" alt="Spectrogram" width="300"><br>
+                    <audio width="300" controls><source src="wav/noisy/closest/p376_351-TMETRO.wav"></audio>
+                    </td>
+            
+                    <td style="width: 20%; text-align: center; padding: 10px; color:black">
+                        <img src="wav/noisy/closest_star/p376_351-TMETRO.png" alt="Spectrogram" width="300"><br>
+                    <audio width="300" controls><source src="wav/noisy/closest_star/p376_351-TMETRO.wav"></audio>
+                    </td>
+
+                    <td style="width: 20%; text-align: center; padding: 10px; color:black">
+                    <img src="wav/noisy/proposed/p376_351-TMETRO.png" alt="Spectrogram" width="300"><br>
+                    <audio width="300" controls><source src="wav/noisy/proposed/p376_351-TMETRO.wav"></audio>
+                    </td>
+
+                    <td style="width: 20%; text-align: center; padding: 10px; color:black">
+                    <img src="wav/noisy/proposed_dag/p376_351-TMETRO.png" alt="Spectrogram" width="300"><br>
+                    <audio width="300" controls><source src="wav/noisy/proposed_dag/p376_351-TMETRO.wav"></audio>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td style="width: 20%; text-align: center; padding: 10px; color:black">
+                    <img src="wav/noisy/input_noisy/s5_159-OHALLWAY.png" alt="Spectrogram" width="300"><br>
+                    <audio width="300" controls><source src="wav/noisy/input_noisy/s5_159-OHALLWAY.wav"></audio>
+                    </td>
+            
+                    <td style="width: 20%; text-align: center; padding: 10px; color:black">
+                    <img src="wav/noisy/closest/s5_159-OHALLWAY.png" alt="Spectrogram" width="300"><br>
+                    <audio width="300" controls><source src="wav/noisy/closest/s5_159-OHALLWAY.wav"></audio>
+                    </td>
+            
+                    <td style="width: 20%; text-align: center; padding: 10px; color:black">
+                        <img src="wav/noisy/closest_star/s5_159-OHALLWAY.png" alt="Spectrogram" width="300"><br>
+                    <audio width="300" controls><source src="wav/noisy/closest_star/s5_159-OHALLWAY.wav"></audio>
+                    </td>
+
+                    <td style="width: 20%; text-align: center; padding: 10px; color:black">
+                    <img src="wav/noisy/proposed/s5_159-OHALLWAY.png" alt="Spectrogram" width="300"><br>
+                    <audio width="300" controls><source src="wav/noisy/proposed/s5_159-OHALLWAY.wav"></audio>
+                    </td>
+
+                    <td style="width: 20%; text-align: center; padding: 10px; color:black">
+                    <img src="wav/noisy/proposed_dag/s5_159-OHALLWAY.png" alt="Spectrogram" width="300"><br>
+                    <audio width="300" controls><source src="wav/noisy/proposed_dag/s5_159-OHALLWAY.wav"></audio>
+                    </td>
+                </tr>
+
+
+            </table>
+
+        </div>
+
+        
+    </div>
+
+
+    <div class="section-title text-center center">
+        <!-- <div class="col-md-20 col-md-offset--100"> -->
+  
+          <br><br><br>
+          <p style="color:black; font-family:Sans-Serif; font-size:32px;"> Experimental Results: Coding Clean Speech</p>
+          <!-- <p style="color:gray; font-family:Sans-Serif; font-size:20px;"> For more samples, please refer to <a href="https://anonymous.4open.science/r/ERVQ-A907/SpeechCoding"><strong>this folder</strong></a>. </p> -->
+  
+          <br><br><br>
+          <p style="color:black; font-family:Sans-Serif; font-size:24px;"> EnCodec @ 6kbps for 24kHz Audio</p>
+          
+          <br><br>
+  
+          <div style="width:1600px; margin:0 auto;">
+  
+              <table align="center"border=0 justify="center" cellpadding="20px" style="width: 60%">
+                  <tr>
+                  
+                  <th style=" background-color:white;position: sticky; top: 0; width: 20%; text-align: center; padding: 10px; color:black">Groundtruth</th>
+                  <th style=" background-color:white; position: sticky; top: 0;width: 20%; text-align: center; padding: 10px; color:black">Closest</th>
+                  <th style=" background-color:white; position: sticky; top: 0;width: 20%; text-align: center; padding: 10px; color:black">Closest*</th>
+                  <th style=" background-color:white; position: sticky; top: 0;width: 20%; text-align: center; padding: 10px; color:black">Proposed</th>
+                  <th style=" background-color:white; position: sticky; top: 0;width: 20%; text-align: center; padding: 10px; color:black">Proposed† </th>
+                  </tr>
+  
+  
+                  <tr>
+                      <td style="width: 20%; text-align: center; padding: 10px; color:black">
+                      <img src="wav/clean/groundtruth/p360_019.png" alt="Spectrogram" width="300"><br>
+                      <audio width="300" controls><source src="wav/clean/groundtruth/p360_019.wav"></audio>
+                      </td>
+              
+                      <td style="width: 20%; text-align: center; padding: 10px; color:black">
+                      <img src="wav/clean/closest/p360_019.png" alt="Spectrogram" width="300"><br>
+                      <audio width="300" controls><source src="wav/clean/closest/p360_019.wav"></audio>
+                      </td>
+              
+                      <td style="width: 20%; text-align: center; padding: 10px; color:black">
+                      <img src="wav/clean/closest_star/p360_019.png" alt="Spectrogram" width="300"><br>
+                      <audio width="300" controls><source src="wav/clean/closest_star/p360_019.wav"></audio>
+                      </td>
+  
+                      <td style="width: 20%; text-align: center; padding: 10px; color:black">
+                      <img src="wav/clean/proposed/p360_019.png" alt="Spectrogram" width="300"><br>
+                      <audio width="300" controls><source src="wav/clean/proposed/p360_019.wav"></audio>
+                      </td>
+  
+                      <td style="width: 20%; text-align: center; padding: 10px; color:black">
+                      <img src="wav/clean/proposed_dag/p360_019.png" alt="Spectrogram" width="300"><br>
+                      <audio width="300" controls><source src="wav/clean/proposed_dag/p360_019.wav"></audio>
+                      </td>
+                  </tr>
+  
+                  <tr>
+                    <td style="width: 20%; text-align: center; padding: 10px; color:black">
+                    <img src="wav/clean/groundtruth/p361_020.png" alt="Spectrogram" width="300"><br>
+                    <audio width="300" controls><source src="wav/clean/groundtruth/p361_020.wav"></audio>
+                    </td>
+            
+                    <td style="width: 20%; text-align: center; padding: 10px; color:black">
+                    <img src="wav/clean/closest/p361_020.png" alt="Spectrogram" width="300"><br>
+                    <audio width="300" controls><source src="wav/clean/closest/p361_020.wav"></audio>
+                    </td>
+            
+                    <td style="width: 20%; text-align: center; padding: 10px; color:black">
+                    <img src="wav/clean/closest_star/p361_020.png" alt="Spectrogram" width="300"><br>
+                    <audio width="300" controls><source src="wav/clean/closest_star/p361_020.wav"></audio>
+                    </td>
+
+                    <td style="width: 20%; text-align: center; padding: 10px; color:black">
+                    <img src="wav/clean/proposed/p361_020.png" alt="Spectrogram" width="300"><br>
+                    <audio width="300" controls><source src="wav/clean/proposed/p361_020.wav"></audio>
+                    </td>
+
+                    <td style="width: 20%; text-align: center; padding: 10px; color:black">
+                    <img src="wav/clean/proposed_dag/p361_020.png" alt="Spectrogram" width="300"><br>
+                    <audio width="300" controls><source src="wav/clean/proposed_dag/p361_020.wav"></audio>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td style="width: 20%; text-align: center; padding: 10px; color:black">
+                    <img src="wav/clean/groundtruth/p362_107.png" alt="Spectrogram" width="300"><br>
+                    <audio width="300" controls><source src="wav/clean/groundtruth/p362_107.wav"></audio>
+                    </td>
+            
+                    <td style="width: 20%; text-align: center; padding: 10px; color:black">
+                    <img src="wav/clean/closest/p362_107.png" alt="Spectrogram" width="300"><br>
+                    <audio width="300" controls><source src="wav/clean/closest/p362_107.wav"></audio>
+                    </td>
+            
+                    <td style="width: 20%; text-align: center; padding: 10px; color:black">
+                    <img src="wav/clean/closest_star/p362_107.png" alt="Spectrogram" width="300"><br>
+                    <audio width="300" controls><source src="wav/clean/closest_star/p362_107.wav"></audio>
+                    </td>
+
+                    <td style="width: 20%; text-align: center; padding: 10px; color:black">
+                    <img src="wav/clean/proposed/p362_107.png" alt="Spectrogram" width="300"><br>
+                    <audio width="300" controls><source src="wav/clean/proposed/p362_107.wav"></audio>
+                    </td>
+
+                    <td style="width: 20%; text-align: center; padding: 10px; color:black">
+                    <img src="wav/clean/proposed_dag/p362_107.png" alt="Spectrogram" width="300"><br>
+                    <audio width="300" controls><source src="wav/clean/proposed_dag/p362_107.wav"></audio>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td style="width: 20%; text-align: center; padding: 10px; color:black">
+                    <img src="wav/clean/groundtruth/p363_108.png" alt="Spectrogram" width="300"><br>
+                    <audio width="300" controls><source src="wav/clean/groundtruth/p363_108.wav"></audio>
+                    </td>
+            
+                    <td style="width: 20%; text-align: center; padding: 10px; color:black">
+                    <img src="wav/clean/closest/p363_108.png" alt="Spectrogram" width="300"><br>
+                    <audio width="300" controls><source src="wav/clean/closest/p363_108.wav"></audio>
+                    </td>
+            
+                    <td style="width: 20%; text-align: center; padding: 10px; color:black">
+                    <img src="wav/clean/closest_star/p363_108.png" alt="Spectrogram" width="300"><br>
+                    <audio width="300" controls><source src="wav/clean/closest_star/p363_108.wav"></audio>
+                    </td>
+
+                    <td style="width: 20%; text-align: center; padding: 10px; color:black">
+                    <img src="wav/clean/proposed/p363_108.png" alt="Spectrogram" width="300"><br>
+                    <audio width="300" controls><source src="wav/clean/proposed/p363_108.wav"></audio>
+                    </td>
+
+                    <td style="width: 20%; text-align: center; padding: 10px; color:black">
+                    <img src="wav/clean/proposed_dag/p363_108.png" alt="Spectrogram" width="300"><br>
+                    <audio width="300" controls><source src="wav/clean/proposed_dag/p363_108.wav"></audio>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td style="width: 20%; text-align: center; padding: 10px; color:black">
+                    <img src="wav/clean/groundtruth/p364_009.png" alt="Spectrogram" width="300"><br>
+                    <audio width="300" controls><source src="wav/clean/groundtruth/p364_009.wav"></audio>
+                    </td>
+            
+                    <td style="width: 20%; text-align: center; padding: 10px; color:black">
+                    <img src="wav/clean/closest/p364_009.png" alt="Spectrogram" width="300"><br>
+                    <audio width="300" controls><source src="wav/clean/closest/p364_009.wav"></audio>
+                    </td>
+            
+                    <td style="width: 20%; text-align: center; padding: 10px; color:black">
+                    <img src="wav/clean/closest_star/p364_009.png" alt="Spectrogram" width="300"><br>
+                    <audio width="300" controls><source src="wav/clean/closest_star/p364_009.wav"></audio>
+                    </td>
+
+                    <td style="width: 20%; text-align: center; padding: 10px; color:black">
+                    <img src="wav/clean/proposed/p364_009.png" alt="Spectrogram" width="300"><br>
+                    <audio width="300" controls><source src="wav/clean/proposed/p364_009.wav"></audio>
+                    </td>
+
+                    <td style="width: 20%; text-align: center; padding: 10px; color:black">
+                    <img src="wav/clean/proposed_dag/p364_009.png" alt="Spectrogram" width="300"><br>
+                    <audio width="300" controls><source src="wav/clean/proposed_dag/p364_009.wav"></audio>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td style="width: 20%; text-align: center; padding: 10px; color:black">
+                    <img src="wav/clean/groundtruth/p374_296.png" alt="Spectrogram" width="300"><br>
+                    <audio width="300" controls><source src="wav/clean/groundtruth/p374_296.wav"></audio>
+                    </td>
+            
+                    <td style="width: 20%; text-align: center; padding: 10px; color:black">
+                    <img src="wav/clean/closest/p374_296.png" alt="Spectrogram" width="300"><br>
+                    <audio width="300" controls><source src="wav/clean/closest/p374_296.wav"></audio>
+                    </td>
+            
+                    <td style="width: 20%; text-align: center; padding: 10px; color:black">
+                    <img src="wav/clean/closest_star/p374_296.png" alt="Spectrogram" width="300"><br>
+                    <audio width="300" controls><source src="wav/clean/closest_star/p374_296.wav"></audio>
+                    </td>
+
+                    <td style="width: 20%; text-align: center; padding: 10px; color:black">
+                    <img src="wav/clean/proposed/p374_296.png" alt="Spectrogram" width="300"><br>
+                    <audio width="300" controls><source src="wav/clean/proposed/p374_296.wav"></audio>
+                    </td>
+
+                    <td style="width: 20%; text-align: center; padding: 10px; color:black">
+                    <img src="wav/clean/proposed_dag/p374_296.png" alt="Spectrogram" width="300"><br>
+                    <audio width="300" controls><source src="wav/clean/proposed_dag/p374_296.wav"></audio>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td style="width: 20%; text-align: center; padding: 10px; color:black">
+                    <img src="wav/clean/groundtruth/p376_351.png" alt="Spectrogram" width="300"><br>
+                    <audio width="300" controls><source src="wav/clean/groundtruth/p376_351.wav"></audio>
+                    </td>
+            
+                    <td style="width: 20%; text-align: center; padding: 10px; color:black">
+                    <img src="wav/clean/closest/p376_351.png" alt="Spectrogram" width="300"><br>
+                    <audio width="300" controls><source src="wav/clean/closest/p376_351.wav"></audio>
+                    </td>
+            
+                    <td style="width: 20%; text-align: center; padding: 10px; color:black">
+                    <img src="wav/clean/closest_star/p376_351.png" alt="Spectrogram" width="300"><br>
+                    <audio width="300" controls><source src="wav/clean/closest_star/p376_351.wav"></audio>
+                    </td>
+
+                    <td style="width: 20%; text-align: center; padding: 10px; color:black">
+                    <img src="wav/clean/proposed/p376_351.png" alt="Spectrogram" width="300"><br>
+                    <audio width="300" controls><source src="wav/clean/proposed/p376_351.wav"></audio>
+                    </td>
+
+                    <td style="width: 20%; text-align: center; padding: 10px; color:black">
+                    <img src="wav/clean/proposed_dag/p376_351.png" alt="Spectrogram" width="300"><br>
+                    <audio width="300" controls><source src="wav/clean/proposed_dag/p376_351.wav"></audio>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td style="width: 20%; text-align: center; padding: 10px; color:black">
+                    <img src="wav/clean/groundtruth/s5_159.png" alt="Spectrogram" width="300"><br>
+                    <audio width="300" controls><source src="wav/clean/groundtruth/s5_159.wav"></audio>
+                    </td>
+            
+                    <td style="width: 20%; text-align: center; padding: 10px; color:black">
+                    <img src="wav/clean/closest/s5_159.png" alt="Spectrogram" width="300"><br>
+                    <audio width="300" controls><source src="wav/clean/closest/s5_159.wav"></audio>
+                    </td>
+            
+                    <td style="width: 20%; text-align: center; padding: 10px; color:black">
+                    <img src="wav/clean/closest_star/s5_159.png" alt="Spectrogram" width="300"><br>
+                    <audio width="300" controls><source src="wav/clean/closest_star/s5_159.wav"></audio>
+                    </td>
+
+                    <td style="width: 20%; text-align: center; padding: 10px; color:black">
+                    <img src="wav/clean/proposed/s5_159.png" alt="Spectrogram" width="300"><br>
+                    <audio width="300" controls><source src="wav/clean/proposed/s5_159.wav"></audio>
+                    </td>
+
+                    <td style="width: 20%; text-align: center; padding: 10px; color:black">
+                    <img src="wav/clean/proposed_dag/s5_159.png" alt="Spectrogram" width="300"><br>
+                    <audio width="300" controls><source src="wav/clean/proposed_dag/s5_159.wav"></audio>
+                    </td>
+                </tr>
+  
+  
+              </table>
+  
+          </div>
+  
+          
+      </div>
+
+</div>
+</div>
+
+
+<script type="text/javascript" src="js/jquery.1.11.1.js"></script> 
+<script type="text/javascript" src="js/bootstrap.js"></script> 
+<script type="text/javascript" src="js/SmoothScroll.js"></script> 
+<script type="text/javascript" src="js/nivo-lightbox.js"></script> 
+<script type="text/javascript" src="js/jquery.isotope.js"></script> 
+<script type="text/javascript" src="js/jqBootstrapValidation.js"></script> 
+<script type="text/javascript" src="js/contact_me.js"></script> 
+<script type="text/javascript" src="js/main.js"></script>
+</body>
+</html>
